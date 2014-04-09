@@ -1,73 +1,63 @@
 ======
-HTTP 1
+MAIL 1
 ======
 
-HTTP1 is a wrapper around httplib to perform HTTP requests in a single call. For instance, to get PyPI index of packages, you might write::
+Mail1 is an API to send email with a single function call. For instance, we could send an email running::
 
-    import http1
+    import mail1
     
-    print http1.request('http://pypi.python.org/simple/').body
+    mail1.send(subject='Test',
+               text='This is a test!',    
+               recipients='casa@sweetohm.net',
+               sender='casa@sweetohm.net',
+               smtp_host='smtp.orange.fr')
 
-request() method
-================
+That's it!
 
-This method performs an HTTP request. The signature of the request method is the following::
+send() method
+=============
 
-    request(url, params={}, method='GET', body=None, headers={},
-            content_type=None, content_length=True, username=None,
-            password=None, capitalize_headers=True,
-            follow_redirect=True, max_redirect=3)
+The signature of the method to send an email is the following::
+
+    send(subject, text, text_html=None, sender=None,
+         recipients=[None], cc=[], bcc=[], attachments={},
+         smtp_host=SMTP_HOST, smtp_port=SMTP_PORT,
+         encoding=ENCODING)
 
 The parameters are the following:
 
-- url: the URL call, including protocol and parameters (such as 'http://www.google.com?foo=1&bar=2').
-- params: URL parameters as a map, so that {'foo': 1, 'bar': 2} will result in an URL ending with '?foo=1&bar=2'.
-- method: the HTTP method (such as 'GET' or 'POST'). Defaults to 'GET'.
-- body: the body of the request as a string. Defaults to None.
-- headers: request headers as a dictionnary. Defaults to '{}'.
-- content_type: the content type header of the request. Defauls to None.
-- content_length: tells if we should add content length headers to the request. Defaults to true.
-- username: username while performing basic authentication, must be set with password.
-- password: password while performing basic authentication, must be set with username.
-- capitalize_headers: tells if headers should be capitalized (so that their names are all like 'Content-Type' for instance).
-- follow_redirect: tells if http1 should follow redirections (status codes 3xx). Defaults to *True*.
-- max_redirect: maximum number of redirections to follow. If there are too many redirects, a TooManyRedirectsException is raised. Defaults to *3*.
+- subject: this is the subject of the email, as a string.
+- text: this is the text of the email as a string.
+- text_html: text as HTML.
+- sender: email address of the sender of the email.
+- recipients: the list of recipients, or the recipient as a string if there is a single one.
+- cc: the list of carbon copies.
+- bcc: the list of blind carbon copies.
+- attachments: a dictionnary that gives the file name for a given attachment name.
+- smtp_host: the hostname of the email server.
+- smtp_port: the port of the email server (defaults to 25).
+- encoding: the encoding of the message.
 
-This method returns the response as a Response object described hereafter.
+Command line
+============
 
-May raise a *TooManyRedirectsException*.
+You can also invoke this script on command line to send emails. To get help about command line parameters, type *python mail1.py -h*, which will display following help page::
 
-*NOTE*: to call HTTPS URLs, Python must have been built with SSL support.
-
-There are dedicated functions for HTTP methods (*GET*, *HEAD*, *POST*, *PUT*, *DELETE*, *CONNECT*, *OPTIONS* and *TRACE*). Thus, to perform a head call for instance, you may write::
-
-  response = http1.head('http://www.example.com')
-
-Which is the same as::
-
-  response = http1.request('http://www.example.com', method='HEAD')
-
-Response object
-===============
-
-This object encapsulates status code (200, 404, as an integer), message (such as 'OK', 'Not Found', as a string), headers (as a dictionnary), and body (as a string).
-
-TooManyRedirectsException
-=========================
-
-This exception is thrown when there have been too many redirects (that is a number of refirects greater than *max_redirect*).
+  mail.py [-h] -f from -r recipient -s subject -a file -m smtphost -e encoding message
+  Send an email with following:
+  -h            Print this help page
+  -f from       The mail sender
+  -r recipient  The mail recipient(s)
+  -s subject    The mail subject
+  -a file       A file to attach
+  -m smtphost   The SMTP server host
+  -e encoding   The encoding to use
+  message       The message
 
 Releases
 ========
 
-- **0.3.0** (2014-04-05): Added functions for HTTP methods.
-- **0.2.1** (2014-04-05): Added TooManyRedirectsException.
-- **0.2.0** (2014-04-05): Added option follow_redirect.
-- **0.1.4** (2014-04-04): Project structure refactoring, included license in the archive.
-- **0.1.3** (2013-07-05): Fixed bug regarding matrix params.
-- **0.1.2** (2012-03-30): More documentation fixes.
-- **0.1.1** (2012-03-30): Documentation fixes.
-- **0.1.0** (2012-03-29): First public release.
+- **0.1.0** (2014-04-10): First public release.
 
 Enjoy!
 
