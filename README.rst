@@ -43,7 +43,8 @@ Command line
 
 You can also invoke this script on command line to send emails. To get help about command line parameters, type *python mail1.py -h*, which will display following help page::
 
-  mail.py [-h] -f from -r recipient -s subject -a file -m smtphost -e encoding message
+  mail.py [-h] -f from -r recipient -s subject -a file 
+               -m smtphost -e encoding message
   Send an email with following:
   -h            Print this help page
   -f from       The mail sender
