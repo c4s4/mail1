@@ -65,7 +65,7 @@ def send(subject, text, text_html=None, sender=SENDER, recipients=[RECIPIENT], c
     smtp.sendmail(sender, recipients+cc+bcc, message.as_string())
     smtp.quit()
 
-HELP = '''mail.py [-h] -f from -r recipient -s subject -a file -m smtphost -e encoding message
+HELP = '''mail1 [-h] -f from -r recipient -s subject -a file -m smtphost -e encoding message
 Send an email with following:
 -h            Print this help page
 -f from       The mail sender
@@ -76,8 +76,8 @@ Send an email with following:
 -e encoding   The encoding to use
 message       The message'''
 
-if __name__ == '__main__':
-    _sender     = SENDER
+def run():
+    _sender     = None
     _recipients = []
     _subject    = None
     _attach     = {}
@@ -112,8 +112,14 @@ if __name__ == '__main__':
             print HELP
             sys.exit(1)
     _message = ' '.join(ARGS)
-    if len(_recipients) < 1:
-        _recipients = [RECIPIENT]
+    if not _recipients:
+        print "Missing recipient"
+        print HELP
+        sys.exit(1)
+    if not _sender:
+        print "Missing sender"
+        print HELP
+        sys.exit(1)
     if not _subject:
         print "Missing subject"
         print HELP
@@ -122,5 +128,9 @@ if __name__ == '__main__':
         print "Missing message"
         print HELP
         sys.exit(1)
-    send(_subject, _message, _sender, _recipients, _attach, _smtp, _encoding)
+    send(subject=_subject, text=_message, sender=_sender, recipients=_recipients, attachments=_attach, smtp_host=_smtp, encoding=_encoding)
+
+
+if __name__ == '__main__':
+    run()
 
