@@ -41,10 +41,10 @@ The parameters are the following:
 Command line
 ============
 
-You can also invoke this script on command line to send emails. To get help about command line parameters, type *python mail1.py -h*, which will display following help page::
+You can also invoke this script on command line to send emails. To get help about command line parameters, type *mail1 -h*, which will display following help page::
 
-  mail.py [-h] -f from -r recipient -s subject -a file 
-               -m smtphost -e encoding message
+  mail1 [-h] -f from -r recipient -s subject -a file 
+             -m smtphost -e encoding message
   Send an email with following:
   -h            Print this help page
   -f from       The mail sender
@@ -58,6 +58,7 @@ You can also invoke this script on command line to send emails. To get help abou
 Releases
 ========
 
+- **0.1.1** (2014-04-15): Fixed command line script.
 - **0.1.0** (2014-04-10): First public release.
 
 Enjoy!
