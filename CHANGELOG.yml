@@ -1,0 +1,14 @@
+# Semantic Change Log
+
+- version: 0.2.0
+  date:    2015-04-26
+  summary: "Project refactoring to meet standards"
+
+- version: 0.1.1
+  date:    2014-04-15
+  fixed:
+  - "Fixed command line script."
+
+- version: 0.1.0
+  date:    2014-04-10
+  summary: "First public release"
