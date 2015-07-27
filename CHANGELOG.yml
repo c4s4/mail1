@@ -1,5 +1,11 @@
 # Semantic Change Log
 
+- version: ?.?.?
+  date:    2015-??-??
+  summary: ???
+  fixed:
+  - "Turned documentation format to markdown."
+
 - version: 0.2.0
   date:    2015-04-26
   summary: "Project refactoring to meet standards"
