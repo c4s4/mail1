@@ -2,43 +2,46 @@ NAME=mail1
 VERSION=$(shell changelog release version)
 BUILD_DIR=build
 
-YELLOW=\033[93m
-RED=\033[1m\033[91m
+YELLOW=\033[1m\033[93m
+CYAN=\033[1m\033[96m
 CLEAR=\033[0m
 
 .PHONY: env test
 
 help:
-	@echo "$(YELLOW)clean$(CLEAR)    Clean generated files"
-	@echo "$(YELLOW)env$(CLEAR)      Activate virtual env"
-	@echo "$(YELLOW)check$(CLEAR)    Check Python code"
-	@echo "$(YELLOW)test$(CLEAR)     Run unit tests"
-	@echo "$(YELLOW)package$(CLEAR)  Build package"
-	@echo "$(YELLOW)release$(CLEAR)  Release project"
+	@echo "$(CYAN)init$(CLEAR)     Build virtualenv"
+	@echo "$(CYAN)clean$(CLEAR)    Clean generated files"
+	@echo "$(CYAN)check$(CLEAR)    Check Python code"
+	@echo "$(CYAN)test$(CLEAR)     Run unit tests"
+	@echo "$(CYAN)package$(CLEAR)  Build package"
+	@echo "$(CYAN)release$(CLEAR)  Release project"
+
+init:
+	@echo "$(YELLOW)Building virtualenv$(CLEAR)"
+	rm -rf env
+	virtualenv env
+	. env/bin/activate && pip install -r etc/requirements.txt
 
 clean:
 	@echo "$(YELLOW)Cleaning generated files$(CLEAR)"
 	rm -rf $(BUILD_DIR)
-	rm -f $(NAME)/*.pyc
+	rm -f `find $(NAME) -name "*.pyc"`
 
-env:
-	@echo "$(YELLOW)Activating virtual env$(CLEAR)"
-	. env/bin/activate
-
-check: env
+check:
 	@echo "$(YELLOW)Checking Python code$(CLEAR)"
-	pylint --rcfile=etc/pylint.cfg $(NAME)
+	. env/bin/activate && pylint --rcfile=etc/pylint.cfg $(NAME)
 
 test: check
 	@echo "$(YELLOW)Running unit tests$(CLEAR)"
-	python $(NAME)/test_$(NAME).py
+	. env/bin/activate && python $(NAME)/test_$(NAME).py
 
 package: test clean
 	@echo "$(YELLOW)Building package$(CLEAR)"
 	mkdir -p $(BUILD_DIR)
 	cp etc/setup.py $(BUILD_DIR)/
 	sed -i -e "s/VERSION/$(VERSION)/" $(BUILD_DIR)/setup.py
-	cp -r LICENSE.txt README.rst etc/MANIFEST.in $(NAME) $(BUILD_DIR)/
+	pandoc -f markdown -t rst README.md > $(BUILD_DIR)/README.rst
+	cp -r LICENSE.txt etc/MANIFEST.in $(NAME) $(BUILD_DIR)/
 	cd $(BUILD_DIR) && python setup.py sdist -d .
 
 release: package
