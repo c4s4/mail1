@@ -1,4 +1,13 @@
-# Semantic Change Log
+# Semantic ChangeLog: https://github.com/c4s4/changelog
+
+- version: 0.2.1
+  date:    2015-07-28
+  summary: Added release on github
+  added:
+  - "Added a distribution archive in release section of github."
+  fixed:
+  - "Improved build file."
+  - "Turned documentation format to markdown."
 
 - version: 0.2.0
   date:    2015-04-26
