@@ -2,7 +2,7 @@
 # encoding=UTF-8
 
 #pylint: disable=W0403
-import mail1
+from . import mail1
 import unittest
 
 class Test(unittest.TestCase):

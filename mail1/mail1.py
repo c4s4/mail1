@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 # encoding: UTF-8
+#
+# pylint: disable=C0325
+
+from __future__ import absolute_import
 
 import os
 import sys
@@ -10,20 +14,27 @@ from email.mime.text import MIMEText
 from email.encoders import encode_base64
 from email.mime.multipart import MIMEMultipart
 
-ENCODING = u'UTF-8'
+ENCODING = 'UTF-8'
 SMTP_HOST = None
 SMTP_PORT = 25
 RECIPIENT = None
 SENDER = RECIPIENT
 
 
-def _binary(string):
-    if isinstance(string, unicode):
-        return string.encode(ENCODING)
-    elif isinstance(string, list):
-        return [_binary(e) for e in string]
-    else:
-        return str(string)
+if sys.version_info[0] >= 3:
+    def _binary(string):
+        if isinstance(string, list):
+            return [_binary(e) for e in string]
+        else:
+            return str(string)
+else:
+    def _binary(string):
+        if isinstance(string, unicode):  # pylint: disable=E0602
+            return string.encode(ENCODING)
+        elif isinstance(string, list):
+            return [_binary(e) for e in string]
+        else:
+            return str(string)
 
 
 def _listify(thing):
@@ -42,31 +53,31 @@ def send(subject, text, text_html=None, sender=SENDER, recipients=[RECIPIENT], c
     bcc = _listify(bcc)
     # build the message
     if text_html:
-        message = MIMEMultipart(u'alternative')
+        message = MIMEMultipart('alternative')
     else:
         message = MIMEMultipart()
-    message[u'Subject'] = subject
-    message[u'From'] = sender
-    message[u'To'] = u', '.join(recipients)
+    message['Subject'] = subject
+    message['From'] = sender
+    message['To'] = ', '.join(recipients)
     if cc:
-        message[u'CC'] = u', '.join(cc)
+        message['CC'] = ', '.join(cc)
     # attach text part
-    message.attach(MIMEText(text, u'plain', _charset=encoding))
+    message.attach(MIMEText(text, 'plain', _charset=encoding))
     if text_html:
-        message.attach(MIMEText(text_html, u'html', _charset=encoding))
+        message.attach(MIMEText(text_html, 'html', _charset=encoding))
     # attach attachments if any
-    for name, filename in attachments.items():
-        part = MIMEBase(u'application', u'octet-stream')
-        part.set_payload(open(filename, u"rb").read())
+    for name, filename in list(attachments.items()):
+        part = MIMEBase('application', 'octet-stream')
+        part.set_payload(open(filename, "rb").read())
         encode_base64(part)
-        part.add_header(u'Content-Disposition',
-                        u'attachment; filename="%s"' % name)
+        part.add_header('Content-Disposition',
+                        'attachment; filename="%s"' % name)
         message.attach(part)
     smtp = smtplib.SMTP(host=smtp_host, port=smtp_port)
     smtp.sendmail(sender, recipients+cc+bcc, message.as_string())
     smtp.quit()
 
-HELP = u'''mail1 [-h] -f from -r recipient -s subject -a file -m smtphost -e encoding message
+HELP = '''mail1 [-h] -f from -r recipient -s subject -a file -m smtphost -e encoding message
 Send an email with following:
 -h            Print this help page
 -f from       The mail sender
@@ -87,51 +98,51 @@ def run():
     _encoding   = ENCODING
     _message    = None
     try:
-        OPTS, ARGS = getopt.getopt(sys.argv[1:], u"hf:r:s:a:m:e:", [u"help", u"from", u"recipient", u"subject", u"attachement", u"smtp", u"encoding"])
-    except getopt.GetoptError, error:
-        print u"ERROR: %s" % str(error)
-        print HELP
+        OPTS, ARGS = getopt.getopt(sys.argv[1:], "hf:r:s:a:m:e:", ["help", "from", "recipient", "subject", "attachement", "smtp", "encoding"])
+    except getopt.GetoptError as error:
+        print("ERROR: %s" % str(error))
+        print(HELP)
         sys.exit(1)
     for OPT, ARG in OPTS:
-        if OPT in (u'-h', u'--help'):
-            print HELP
+        if OPT in ('-h', '--help'):
+            print(HELP)
             sys.exit(0)
-        elif OPT in (u'-f', u'--from'):
+        elif OPT in ('-f', '--from'):
             _sender = ARG
-        elif OPT in (u'-r', u'--recipient'):
+        elif OPT in ('-r', '--recipient'):
             _recipients.append(ARG)
-        elif OPT in (u'-s', u'--subject'):
+        elif OPT in ('-s', '--subject'):
             _subject = ARG
-        elif OPT in (u'-a', u'--attach'):
+        elif OPT in ('-a', '--attach'):
             _name = os.path.basename(ARG)
             _attach[_name] = ARG
-        elif OPT in (u'-m', u'--smtp'):
+        elif OPT in ('-m', '--smtp'):
             _smtp = ARG
-        elif OPT in (u'-e', u'--encoding'):
+        elif OPT in ('-e', '--encoding'):
             _encoding = ARG
         else:
-            print u"Unhandled option: %s" % OPT
-            print HELP
+            print("Unhandled option: %s" % OPT)
+            print(HELP)
             sys.exit(1)
-    _message = u' '.join(ARGS)
+    _message = ' '.join(ARGS)
     if not _recipients:
-        print u"Missing recipient"
-        print HELP
+        print("Missing recipient")
+        print(HELP)
         sys.exit(1)
     if not _sender:
-        print u"Missing sender"
-        print HELP
+        print("Missing sender")
+        print(HELP)
         sys.exit(1)
     if not _subject:
-        print u"Missing subject"
-        print HELP
+        print("Missing subject")
+        print(HELP)
         sys.exit(1)
     if not _message:
-        print u"Missing message"
-        print HELP
+        print("Missing message")
+        print(HELP)
         sys.exit(1)
     send(subject=_subject, text=_message, sender=_sender, recipients=_recipients, attachments=_attach, smtp_host=_smtp, encoding=_encoding)
 
 
-if __name__ == u'__main__':
+if __name__ == '__main__':
     run()
