@@ -31,7 +31,7 @@ check:
 	@echo "$(YELLOW)Checking Python code$(CLEAR)"
 	. env/bin/activate && pylint --rcfile=etc/pylint.cfg $(NAME)
 
-test: 
+test: check
 	@echo "$(YELLOW)Running unit tests$(CLEAR)"
 	. env/bin/activate && python -m $(NAME).test_$(NAME)
 
