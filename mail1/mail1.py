@@ -10,7 +10,7 @@ from email.mime.text import MIMEText
 from email.encoders import encode_base64
 from email.mime.multipart import MIMEMultipart
 
-ENCODING = 'UTF-8'
+ENCODING = u'UTF-8'
 SMTP_HOST = None
 SMTP_PORT = 25
 RECIPIENT = None
@@ -42,30 +42,31 @@ def send(subject, text, text_html=None, sender=SENDER, recipients=[RECIPIENT], c
     bcc = _listify(bcc)
     # build the message
     if text_html:
-        message = MIMEMultipart('alternative')
+        message = MIMEMultipart(u'alternative')
     else:
         message = MIMEMultipart()
-    message['Subject'] = subject
-    message['From'] = sender
-    message['To'] = ', '.join(recipients)
+    message[u'Subject'] = subject
+    message[u'From'] = sender
+    message[u'To'] = u', '.join(recipients)
     if cc:
-        message['CC'] = ', '.join(cc)
+        message[u'CC'] = u', '.join(cc)
     # attach text part
-    message.attach(MIMEText(text, 'plain', _charset=encoding))
+    message.attach(MIMEText(text, u'plain', _charset=encoding))
     if text_html:
-        message.attach(MIMEText(text_html, 'html', _charset=encoding))
+        message.attach(MIMEText(text_html, u'html', _charset=encoding))
     # attach attachments if any
     for name, filename in attachments.items():
-        part = MIMEBase('application', 'octet-stream')
-        part.set_payload(open(filename,"rb").read())
+        part = MIMEBase(u'application', u'octet-stream')
+        part.set_payload(open(filename, u"rb").read())
         encode_base64(part)
-        part.add_header('Content-Disposition', 'attachment; filename="%s"' % name)
+        part.add_header(u'Content-Disposition',
+                        u'attachment; filename="%s"' % name)
         message.attach(part)
     smtp = smtplib.SMTP(host=smtp_host, port=smtp_port)
     smtp.sendmail(sender, recipients+cc+bcc, message.as_string())
     smtp.quit()
 
-HELP = '''mail1 [-h] -f from -r recipient -s subject -a file -m smtphost -e encoding message
+HELP = u'''mail1 [-h] -f from -r recipient -s subject -a file -m smtphost -e encoding message
 Send an email with following:
 -h            Print this help page
 -f from       The mail sender
@@ -76,6 +77,7 @@ Send an email with following:
 -e encoding   The encoding to use
 message       The message'''
 
+
 def run():
     _sender     = None
     _recipients = []
@@ -85,52 +87,51 @@ def run():
     _encoding   = ENCODING
     _message    = None
     try:
-        OPTS, ARGS = getopt.getopt(sys.argv[1:], "hf:r:s:a:m:e:", ["help", "from", "recipient", "subject", "attachement", "smtp", "encoding"])
+        OPTS, ARGS = getopt.getopt(sys.argv[1:], u"hf:r:s:a:m:e:", [u"help", u"from", u"recipient", u"subject", u"attachement", u"smtp", u"encoding"])
     except getopt.GetoptError, error:
-        print "ERROR: %s" % str(error)
+        print u"ERROR: %s" % str(error)
         print HELP
         sys.exit(1)
     for OPT, ARG in OPTS:
-        if OPT == '-h' or OPT == '--help':
+        if OPT in (u'-h', u'--help'):
             print HELP
             sys.exit(0)
-        elif OPT == '-f' or OPT == '--from':
+        elif OPT in (u'-f', u'--from'):
             _sender = ARG
-        elif OPT == '-r' or OPT == '--recipient':
+        elif OPT in (u'-r', u'--recipient'):
             _recipients.append(ARG)
-        elif OPT == '-s' or OPT == '--subject':
+        elif OPT in (u'-s', u'--subject'):
             _subject = ARG
-        elif OPT == '-a' or OPT == '--attach':
+        elif OPT in (u'-a', u'--attach'):
             _name = os.path.basename(ARG)
             _attach[_name] = ARG
-        elif OPT == '-m' or OPT == '--smtp':
+        elif OPT in (u'-m', u'--smtp'):
             _smtp = ARG
-        elif OPT == '-e' or OPT == '--encoding':
+        elif OPT in (u'-e', u'--encoding'):
             _encoding = ARG
         else:
-            print "Unhandled option: %s" % OPT
+            print u"Unhandled option: %s" % OPT
             print HELP
             sys.exit(1)
-    _message = ' '.join(ARGS)
+    _message = u' '.join(ARGS)
     if not _recipients:
-        print "Missing recipient"
+        print u"Missing recipient"
         print HELP
         sys.exit(1)
     if not _sender:
-        print "Missing sender"
+        print u"Missing sender"
         print HELP
         sys.exit(1)
     if not _subject:
-        print "Missing subject"
+        print u"Missing subject"
         print HELP
         sys.exit(1)
     if not _message:
-        print "Missing message"
+        print u"Missing message"
         print HELP
         sys.exit(1)
     send(subject=_subject, text=_message, sender=_sender, recipients=_recipients, attachments=_attach, smtp_host=_smtp, encoding=_encoding)
 
 
-if __name__ == '__main__':
+if __name__ == u'__main__':
     run()
-
