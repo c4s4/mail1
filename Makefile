@@ -6,7 +6,7 @@ YELLOW=\033[1m\033[93m
 CYAN=\033[1m\033[96m
 CLEAR=\033[0m
 
-.PHONY: env test
+.PHONY: venv test
 
 help:
 	@echo "$(CYAN)init$(CLEAR)     Build virtualenv"
@@ -18,9 +18,9 @@ help:
 
 init:
 	@echo "$(YELLOW)Building virtualenv$(CLEAR)"
-	rm -rf env
-	virtualenv env
-	. env/bin/activate && pip install -r etc/requirements.txt
+	rm -rf venv
+	virtualenv venv
+	. venv/bin/activate && pip install -r etc/requirements.txt
 
 clean:
 	@echo "$(YELLOW)Cleaning generated files$(CLEAR)"
@@ -29,11 +29,11 @@ clean:
 
 check:
 	@echo "$(YELLOW)Checking Python code$(CLEAR)"
-	. env/bin/activate && pylint --rcfile=etc/pylint.cfg $(NAME)
+	. venv/bin/activate && pylint --rcfile=etc/pylint.cfg $(NAME)
 
 test: check
 	@echo "$(YELLOW)Running unit tests$(CLEAR)"
-	. env/bin/activate && python -m $(NAME).test_$(NAME)
+	. venv/bin/activate && python -m $(NAME).test_$(NAME)
 
 package: test clean
 	@echo "$(YELLOW)Building package$(CLEAR)"
