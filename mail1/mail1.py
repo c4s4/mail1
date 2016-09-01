@@ -81,7 +81,7 @@ HELP = '''mail1 [-h] -f from -r recipient -s subject -a file -m smtphost -e enco
 Send an email with following:
 -h            Print this help page
 -f from       The mail sender
--r recipient  The mail recipient(s)
+-r recipient  The mail recipient (repeat for more than one recipient)
 -s subject    The mail subject
 -a file       A file to attach
 -m smtphost   The SMTP server host

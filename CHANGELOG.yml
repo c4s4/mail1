@@ -1,5 +1,11 @@
 # Semantic ChangeLog: https://github.com/c4s4/changelog
 
+- version: 3.0.1
+  date:    2016-09-01
+  summary: Fixed documentation
+  fixed:
+  - "Fixed documentation regarding list of recipients."
+
 - version: 3.0.0
   date:    2015-10-13
   summary: Ported to Python 3
