@@ -1,0 +1,38 @@
+extends:
+- c4s4/build/python.yml
+- c4s4/build/release.yml
+
+properties:
+  NAME:         'mail1'
+  REQUIREMENTS: 'etc/requirements.txt'
+
+targets:
+
+  package:
+    doc: Generate package
+    depends: [test, clean]
+    steps:
+    - mkdir: =BUILD_DIR
+    - copy:  'setup.py'
+      dir:   'etc'
+      todir: =BUILD_DIR
+    - replace: '={BUILD_DIR}/setup.py'
+      with:
+        VERSION: =VERSION
+    - $: ['pandoc', '-f', 'markdown', '-t', 'rst', 'README.md', '-o', '={BUILD_DIR}/README.rst']
+    - copy:  ['LICENSE.txt', '={NAME}/**/*']
+      todir: =BUILD_DIR
+    - copy:  'MANIFEST.in'
+      dir:   'etc'
+      todir: =BUILD_DIR
+    - chdir: =BUILD_DIR
+    - $: ['../={VENV_DIR}/bin/python', 'setup.py', 'sdist', '-d', '.']
+
+  release:
+    doc: Perform a release
+    depends: [clean, test, package]
+    steps:
+    - chdir: =BUILD_DIR
+    - $: ['../={VENV_DIR}/bin/python', 'setup.py','sdist', '-d', '.', 'register', 'upload']
+    - chdir: =_BASE
+    - super:
