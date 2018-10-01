@@ -21,8 +21,8 @@ The signature of the method to send an email is the following:
 
     send(subject, text, text_html=None, sender=None,
          recipients=[None], cc=[], bcc=[], attachments={},
-         smtp_host=SMTP_HOST, smtp_port=SMTP_PORT,
-         encoding=ENCODING)
+         encoding=ENCODING, smtp_host=SMTP_HOST, smtp_port=SMTP_PORT,
+         username=None, password=None)
 
 The parameters are the following:
 
@@ -36,9 +36,11 @@ The parameters are the following:
 - **bcc**: the list of blind carbon copies.
 - **attachments**: a dictionnary that gives the file name for a given
   attachment name.
+- **encoding**: the encoding of the message.
 - **smtp\_host**: the hostname of the email server.
 - **smtp\_port**: the port of the email server (defaults to 25).
-- **encoding**: the encoding of the message.
+- **username**: the username for SMTP basic authentication
+- **password**: the password for SMTP basic authentication
 
 Command line
 ------------
@@ -55,9 +57,10 @@ following help page:
     -r recipient  The mail recipient (repeat for more than one recipient)
     -s subject    The mail subject
     -a file       A file to attach
-    -m smtphost   The SMTP server host
     -e encoding   The encoding to use
+    -m smtphost   The SMTP server host
+    -u username   The SMTP username
+    -p password   The SMTP password
     message       The message
 
 Enjoy!
-
