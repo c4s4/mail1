@@ -15,10 +15,6 @@ class Test(unittest.TestCase):
                    recipients='casa@sweetohm.net',
                    sender='casa@sweetohm.net',
                    smtp_host=self.SMTP_HOST)
-        mail1.send(subject='Test', text='This is a test!',
-                   recipients=['casa@sweetohm.net'],
-                   sender='casa@sweetohm.net',
-                   smtp_host=self.SMTP_HOST)
 
 
 if __name__ == '__main__':
