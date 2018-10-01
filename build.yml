@@ -1,6 +1,7 @@
+# NeON Build File (https://github.com/c4s4/neon)
+
 extends:
 - c4s4/build/python.yml
-- c4s4/build/release.yml
 
 properties:
   NAME:         'mail1'
@@ -10,7 +11,7 @@ targets:
 
   package:
     doc: Generate package
-    depends: [test, clean]
+    depends: [clean]
     steps:
     - mkdir: =BUILD_DIR
     - copy:  'setup.py'
@@ -28,11 +29,15 @@ targets:
     - chdir: =BUILD_DIR
     - $: ['../={VENV_DIR}/bin/python', 'setup.py', 'sdist', '-d', '.']
 
-  release:
-    doc: Perform a release
-    depends: [clean, test, package]
+  upload:
+    doc: Upload package
+    depends: package
     steps:
     - chdir: =BUILD_DIR
-    - $: ['../={VENV_DIR}/bin/python', 'setup.py','sdist', '-d', '.', 'register', 'upload']
-    - chdir: =_BASE
+    - $: ['../={VENV_DIR}/bin/python', 'setup.py','sdist', '-d', '.', 'upload']
+
+  release:
+    doc: Perform a release
+    depends: [clean, test, upload]
+    steps:
     - super:

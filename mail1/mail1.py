@@ -43,7 +43,9 @@ def _listify(thing):
     return _binary(thing)
 
 
-def send(subject, text, text_html=None, sender=SENDER, recipients=[RECIPIENT], cc=[], bcc=[], attachments={}, smtp_host=SMTP_HOST, smtp_port=SMTP_PORT, encoding=ENCODING):
+def send(subject, text, text_html=None, sender=SENDER, recipients=[RECIPIENT], cc=[], bcc=[], 
+         attachments={}, smtp_host=SMTP_HOST, encoding=ENCODING,
+         smtp_port=SMTP_PORT, username=None, password=None):
     # encode all strings in binary strings
     subject = _binary(subject)
     text = _binary(text)
@@ -74,6 +76,8 @@ def send(subject, text, text_html=None, sender=SENDER, recipients=[RECIPIENT], c
                         'attachment; filename="%s"' % name)
         message.attach(part)
     smtp = smtplib.SMTP(host=smtp_host, port=smtp_port)
+    if username and password:
+        smtp.login(user=username, password=password)
     smtp.sendmail(sender, recipients+cc+bcc, message.as_string())
     smtp.quit()
 
@@ -84,8 +88,10 @@ Send an email with following:
 -r recipient  The mail recipient (repeat for more than one recipient)
 -s subject    The mail subject
 -a file       A file to attach
--m smtphost   The SMTP server host
 -e encoding   The encoding to use
+-m smtphost   The SMTP server host
+-u username   The username for authentication
+-p password   The password for authentication
 message       The message'''
 
 
@@ -94,11 +100,13 @@ def run():
     _recipients = []
     _subject    = None
     _attach     = {}
-    _smtp       = SMTP_HOST
     _encoding   = ENCODING
+    _smtp       = SMTP_HOST
+    _username   = None
+    _password   = None
     _message    = None
     try:
-        OPTS, ARGS = getopt.getopt(sys.argv[1:], "hf:r:s:a:m:e:", ["help", "from", "recipient", "subject", "attachement", "smtp", "encoding"])
+        OPTS, ARGS = getopt.getopt(sys.argv[1:], "hf:r:s:a:e:m:u:p:", ["help", "from", "recipient", "subject", "attachement", "encoding", "smtp", "username", "password"])
     except getopt.GetoptError as error:
         print("ERROR: %s" % str(error))
         print(HELP)
@@ -116,10 +124,14 @@ def run():
         elif OPT in ('-a', '--attach'):
             _name = os.path.basename(ARG)
             _attach[_name] = ARG
-        elif OPT in ('-m', '--smtp'):
-            _smtp = ARG
         elif OPT in ('-e', '--encoding'):
             _encoding = ARG
+        elif OPT in ('-m', '--smtp'):
+            _smtp = ARG
+        elif OPT in ('-u', '--username'):
+            _username = ARG
+        elif OPT in ('-p', '--password'):
+            _password = ARG
         else:
             print("Unhandled option: %s" % OPT)
             print(HELP)
@@ -141,7 +153,9 @@ def run():
         print("Missing message")
         print(HELP)
         sys.exit(1)
-    send(subject=_subject, text=_message, sender=_sender, recipients=_recipients, attachments=_attach, smtp_host=_smtp, encoding=_encoding)
+    send(subject=_subject, text=_message, sender=_sender, recipients=_recipients, 
+         attachments=_attach, encoding=_encoding,
+         smtp_host=_smtp, username=_username,password=_password)
 
 
 if __name__ == '__main__':
