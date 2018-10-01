@@ -38,6 +38,6 @@ targets:
 
   release:
     doc: Perform a release
-    depends: [clean, test, upload]
+    depends: [clean, test]
     steps:
     - super:
