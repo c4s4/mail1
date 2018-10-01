@@ -1,7 +1,7 @@
 # Semantic ChangeLog: https://github.com/c4s4/changelog
 
 - version: 3.1.0
-  date:    2018-10-00
+  date:    2018-10-01
   summary: Added SMTP authentication
   added:
   - "Added SMTP basic authentication."
