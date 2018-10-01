@@ -1,5 +1,13 @@
+# direct dependencies
 pylint==1.4.5
+PyYAML==3.13
 # transitive dependencies
 astroid==1.3.8
+isort==4.3.4
+lazy-object-proxy==1.3.1
 logilab-common==1.2.0
+mccabe==0.6.1
 six==1.10.0
+typed-ast==1.1.0
+wrapt==1.10.11
+yapf==0.24.0
