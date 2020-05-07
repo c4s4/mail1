@@ -19,18 +19,10 @@ RECIPIENT = None
 SENDER = RECIPIENT
 
 
-if sys.version_info[0] >= 3:
-    def _binary(string):
-        if isinstance(string, list):
-            return [_binary(e) for e in string]
-        return str(string)
-else:
-    def _binary(string):
-        if isinstance(string, unicode):  # pylint: disable=E0602
-            return string.encode(ENCODING)
-        if isinstance(string, list):
-            return [_binary(e) for e in string]
-        return str(string)
+def _binary(string):
+    if isinstance(string, list):
+        return [_binary(e) for e in string]
+    return str(string)
 
 
 def _listify(thing):
