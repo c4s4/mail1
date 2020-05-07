@@ -1,5 +1,7 @@
 /build/
 /venv/
+/.make/
+/.vscode/
 __pycache__/
 *.pyc
 .env

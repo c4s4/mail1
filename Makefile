@@ -7,6 +7,6 @@ include .make/python.mk
 include .make/git.mk
 include ~/.make/make.mk
 
-MAKE_ID=c8addc1e47e6469c2f4629495fd15c79603de483
+MAKE_ID=d6f2d484487c3a245a8665a78e3a63810e3ec30b
 PYTHON_ENV=~/.env/email.env
 PYTHON_ITG=. $(PYTHON_ENV) && venv/bin/python mail1/test_mail1.py

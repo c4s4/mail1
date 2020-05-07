@@ -40,6 +40,8 @@ The parameters are the following:
 - **username**: the username for SMTP basic authentication
 - **password**: the password for SMTP basic authentication
 
+If not set, SMTP host, username and password are extracted from environment variables *MAIL_SMTP*, *MAIL_USERNAME* and *MAIL_PASSWORD*.
+
 ## Command line
 
 You can also invoke this script on command line to send emails. To get
@@ -59,5 +61,7 @@ following help page:
     -u username   The SMTP username
     -p password   The SMTP password
     message       The message
+
+If not passed on command line, SMTP host, username and password are extracted from environment variables *MAIL_SMTP*, *MAIL_USERNAME* and *MAIL_PASSWORD*.
 
 Enjoy!

@@ -42,6 +42,13 @@ def _listify(thing):
 def send(subject, text, text_html=None, sender=SENDER, recipients=[RECIPIENT], cc=[], bcc=[],
          attachments={}, smtp_host=SMTP_HOST, encoding=ENCODING,
          smtp_port=None, username=None, password=None):
+    # get credentials from environment
+    if not smtp_host:
+        smtp_host = os.environ['MAIL_SMTP']
+    if not username and 'MAIL_USERNAME' in os.environ:
+        username = os.environ['MAIL_USERNAME']
+    if not password and 'MAIL_PASSWORD' in os.environ:
+        password = os.environ['MAIL_PASSWORD']
     # manage smtp port
     if not smtp_port:
         if ':' in smtp_host:
