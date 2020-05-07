@@ -1,5 +1,4 @@
-MAIL 1
-======
+# MAIL 1
 
 Mail1 is an API to send email with a single function call. For instance,
 we could send an email running:
@@ -7,15 +6,14 @@ we could send an email running:
     import mail1
 
     mail1.send(subject='Test',
-               text='This is a test!',    
+               text='This is a test!',
                recipients='casa@sweetohm.net',
                sender='casa@sweetohm.net',
                smtp_host='smtp.orange.fr')
 
 That's it!
 
-send() method
--------------
+## send() method
 
 The signature of the method to send an email is the following:
 
@@ -42,14 +40,13 @@ The parameters are the following:
 - **username**: the username for SMTP basic authentication
 - **password**: the password for SMTP basic authentication
 
-Command line
-------------
+## Command line
 
 You can also invoke this script on command line to send emails. To get
 help about command line parameters, type *mail1 -h*, which will display
 following help page:
 
-    mail1 [-h] -f from -r recipient -s subject -a file 
+    mail1 [-h] -f from -r recipient -s subject -a file
                -m smtphost -e encoding message
     Send an email with following:
     -h            Print this help page

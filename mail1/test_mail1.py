@@ -1,31 +1,20 @@
 #!/usr/bin/env python
 # encoding=UTF-8
 
-# pylint: disable=W0403
-from . import mail1
+import os
 import unittest
-import yaml
-
+import mail1
 
 class Test(unittest.TestCase):
 
-    SMTP_HOST = 'smtp.orange.fr'
-
     def test_send_email(self):
-        mail1.send(subject='Test', text='This is a test!',
-                   recipients='casa@sweetohm.net',
-                   sender='casa@sweetohm.net',
-                   smtp_host=self.SMTP_HOST)
-
-    def test_send_email_login(self):
-        with open('/home/casa/.credentials/email-orange.yml') as stream:
-            credentials = yaml.load(stream)
-        mail1.send(subject='Test', text='This is a test!',
-                   recipients='casa@sweetohm.net',
-                   sender='casa@sweetohm.net',
-                   smtp_host=self.SMTP_HOST,
-                   username=credentials['username'],
-                   password=credentials['password'])
+        mail1.send(subject='Test',
+                   text='This is a test!',
+                   recipients=os.environ['MAIL_RECIPIENT'],
+                   sender=os.environ['MAIL_FROM'],
+                   smtp_host=os.environ['MAIL_SMTP'],
+                   username=os.environ['MAIL_USERNAME'],
+                   password=os.environ['MAIL_PASSWORD'])
 
 
 if __name__ == '__main__':

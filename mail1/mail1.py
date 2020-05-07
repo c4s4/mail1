@@ -3,8 +3,6 @@
 #
 # pylint: disable=C0325
 
-from __future__ import absolute_import
-
 import os
 import sys
 import getopt
@@ -25,16 +23,14 @@ if sys.version_info[0] >= 3:
     def _binary(string):
         if isinstance(string, list):
             return [_binary(e) for e in string]
-        else:
-            return str(string)
+        return str(string)
 else:
     def _binary(string):
         if isinstance(string, unicode):  # pylint: disable=E0602
             return string.encode(ENCODING)
-        elif isinstance(string, list):
+        if isinstance(string, list):
             return [_binary(e) for e in string]
-        else:
-            return str(string)
+        return str(string)
 
 
 def _listify(thing):
@@ -43,9 +39,16 @@ def _listify(thing):
     return _binary(thing)
 
 
-def send(subject, text, text_html=None, sender=SENDER, recipients=[RECIPIENT], cc=[], bcc=[], 
+def send(subject, text, text_html=None, sender=SENDER, recipients=[RECIPIENT], cc=[], bcc=[],
          attachments={}, smtp_host=SMTP_HOST, encoding=ENCODING,
-         smtp_port=SMTP_PORT, username=None, password=None):
+         smtp_port=None, username=None, password=None):
+    # manage smtp port
+    if not smtp_port:
+        if ':' in smtp_host:
+            smtp_host, smtp_port = smtp_host.split(':', 2)
+            smtp_port = int(smtp_port)
+        else:
+            smtp_port = SMTP_PORT
     # encode all strings in binary strings
     subject = _binary(subject)
     text = _binary(text)
@@ -77,6 +80,10 @@ def send(subject, text, text_html=None, sender=SENDER, recipients=[RECIPIENT], c
         message.attach(part)
     smtp = smtplib.SMTP(host=smtp_host, port=smtp_port)
     if username and password:
+        smtp.connect(smtp_host, smtp_port)
+        smtp.ehlo()
+        smtp.starttls()
+        smtp.ehlo()
         smtp.login(user=username, password=password)
     smtp.sendmail(sender, recipients+cc+bcc, message.as_string())
     smtp.quit()
@@ -153,7 +160,7 @@ def run():
         print("Missing message")
         print(HELP)
         sys.exit(1)
-    send(subject=_subject, text=_message, sender=_sender, recipients=_recipients, 
+    send(subject=_subject, text=_message, sender=_sender, recipients=_recipients,
          attachments=_attach, encoding=_encoding,
          smtp_host=_smtp, username=_username,password=_password)
 
